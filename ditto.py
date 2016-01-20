@@ -17,18 +17,19 @@ import shutil
 
 def vprint(string, verbose):
     if verbose:
-        print('\t[ditto] %s')
+        print('\t[ditto] %s' % string)
 
 
 def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
     """
     1. if needed, create dothome/.dotfiles-original
     2. for each dotfile:
-        - check for file or directory (not a symlink)
-        - if not in the backup, move to the backup
-        - create a symbolic link to dotarchive
+        a check for file or directory (not a symlink)
+        b if not in the backup, move to the backup
+        c create a symbolic link to dotarchive
     """
 
+    # 1
     dotbackup = os.path.join(dothome, '.dotfiles-original')
     if not os.path.isdir(dotbackup):  # makes this python 2 compliant
         vprint('.dotfiles-original does not exist...making', verbose)
@@ -38,6 +39,39 @@ def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
             raise IOError('Problem making %s' % dotbackup)
     else:
         vprint('.dotfiles-original exists', verbose)
+
+    # 2
+    for dotf in dotfiles:
+
+        dotfloc = os.path.join(dothome, '.' + dotf)
+        dotfbloc = os.path.join(dotbackup, dotf)
+        dotfaloc = os.path.join(dotarchive, dotf)
+
+        # 2a
+        if os.path.islink(dotfloc):
+            vprint('%s already linked' % dotf, verbose)
+            pass
+        elif os.path.isfile(dotfloc) or os.path.isdir(dotfloc):
+            # 2b
+            vprint('%s found in home' % dotf, verbose)
+            if os.path.isfile(dotfbloc) or os.path.isdir(dotfbloc):
+                raise ValueError('Found a file (%s) that is already backed up'
+                                 % dotf)
+            else:
+                shutil.move(dotfloc, dotfbloc)
+                vprint('%s moved to backup' % dotf, verbose)
+
+        # 2c
+        if not os.path.islink(dotfloc):
+            vprint('%s not symlinked' % dotf, verbose)
+            if not (os.path.isfile(dotfaloc) or os.path.isdir(dotfaloc)):
+                raise ValueError('File %s does not exist in the archive')
+            else:
+                try:
+                    os.symlink(dotfaloc, dotfloc)
+                    vprint('%s is now symlinked' % dotf, verbose)
+                except:
+                    raise IOError('Could not symlink %s' % dotfaloc)
 
 
 def get_dotfiles_list(dotarchive, verbose=False):
@@ -86,7 +120,7 @@ def main():
     parser.add_argument("dotarchive",
                         help="absolute path to the dotfile archive")
     parser.add_argument("--verbose", default=False,
-                        help="verbose mode")
+                        help="verbose mode", action="store_true")
     args = parser.parse_args()
 
     dotfiles = get_dotfiles_list(args.dotarchive, verbose=args.verbose)
