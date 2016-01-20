@@ -65,7 +65,8 @@ def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
         if not os.path.islink(dotfloc):
             vprint('%s not symlinked' % dotf, verbose)
             if not (os.path.isfile(dotfaloc) or os.path.isdir(dotfaloc)):
-                raise ValueError('File %s does not exist in the archive')
+                vprint('File %s does not exist' % dotfaloc,
+                       verbose)
             else:
                 try:
                     os.symlink(dotfaloc, dotfloc)
