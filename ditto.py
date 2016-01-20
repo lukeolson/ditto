@@ -14,6 +14,10 @@ Then symlinks are made from dothome to dotarchive.  Simple as that.
 import os
 
 
+def make_symlinks(dothome, dotarchive, dotfiles):
+    pass
+
+
 def get_dotfiles_list(dotarchive):
     """
     Attempt to find a list of files in setup.cfg
@@ -31,6 +35,8 @@ def get_dotfiles_list(dotarchive):
             raise EnvironmentError('could not read %s' % cfg_file)
 
         dotfiles = [d.strip() for d in dotfiles]
+    else:
+        dotfiles = [f for f in os.listdir(dotarchive)]
 
     return dotfiles
 
@@ -50,6 +56,8 @@ def main():
 
     dotfiles = get_dotfiles_list(args.dotarchive)
     print(dotfiles)
+
+    make_symlinks(args.dothome, args.dotarchive, dotfiles)
 
 if __name__ == "__main__":
     main()
