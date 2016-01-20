@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 """
 The purpose of this script is to update dot files somewhere.  It works in the
 following way.  Two locations are set
