@@ -11,6 +11,28 @@ dotarchive : ($HOME/.dotarchive)
 
 Then symlinks are made from dothome to dotarchive.  Simple as that.
 """
+import os
+
+
+def get_dotfiles_list(dotarchive):
+    """
+    Attempt to find a list of files in setup.cfg
+
+    If not, just grab the files in dotarchive
+    """
+    cfg_file = os.path.join(dotarchive, 'setup.cfg')
+    dotfiles = []
+
+    if os.path.isfile(cfg_file):
+        try:
+            with open(cfg_file) as f:
+                dotfiles = f.readlines()
+        except:
+            raise EnvironmentError('could not read %s' % cfg_file)
+
+        dotfiles = [d.strip() for d in dotfiles]
+
+    return dotfiles
 
 
 def main():
@@ -26,8 +48,8 @@ def main():
                         help="absolute path to the dotfile archive")
     args = parser.parse_args()
 
-    print(args.dothome)
-    print(args.dotarchive)
+    dotfiles = get_dotfiles_list(args.dotarchive)
+    print(dotfiles)
 
 if __name__ == "__main__":
     main()
