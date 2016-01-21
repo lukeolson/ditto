@@ -9,7 +9,7 @@ source_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(source_dir, 'donut.py')) as f:
     for line in f:
         if line.startswith('__version__'):
-            version = line.split('=')[-1]
+            version = line.split('=')[-1].strip()
 
 long_description = open(os.path.join(source_dir, 'README.md')).read()
 
