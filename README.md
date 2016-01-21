@@ -1,4 +1,4 @@
-# ditto
+# donut
 
 The purpose of this script is to update dot files somewhere.  It works in the
 following way.  Two locations are set:
@@ -10,10 +10,14 @@ Then symlinks are made from dothome to dotarchive.  Simple as that.
 
 ## Installation
 
+```
+pip install donut
+```
+
 ## Usage
 
 ```
-ditto ~ ~/repos/dotfiles
+donut ~ ~/repos/dotfiles
 ```
 
 ## Notes
