@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 
-import os
-
 from setuptools import setup
 
-source_dir = os.path.dirname(os.path.abspath(__file__))
-
-with open(os.path.join(source_dir, 'donut.py')) as f:
+with open('donut.py') as f:
     for line in f:
         if line.startswith('__version__'):
-            version = line.split('=')[-1].strip()
+            version = eval(line.split('=')[-1])
 
-long_description = open(os.path.join(source_dir, 'README.md')).read()
+long_description = open('README.md').read()
 
 setup(name='donut',
       license='MIT',
