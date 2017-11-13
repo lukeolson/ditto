@@ -22,13 +22,14 @@ def vprint(string, verbose):
         print('\t[donut] %s' % string)
 
 
-def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
+def make_symlinks(dothome, dotarchive, dotfiles, verbose=False, force=False):
     """
     1. if needed, create dothome/.dotfiles-original
     2. for each dotfile:
-        a check for file or directory (not a symlink)
-        b if not in the backup, move to the backup
-        c create a symbolic link to dotarchive
+        a if forced, unsymlink
+        b check for file or directory (not a symlink)
+        c if not in the backup, move to the backup
+        d create a symbolic link to dotarchive
     """
 
     # 1
@@ -50,11 +51,16 @@ def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
         dotfaloc = os.path.join(dotarchive, dotf)
 
         # 2a
+        if os.path.islink(dotfloc) and force:
+            vprint('unlinking %s' % dotf, verbose)
+            os.unlink(dotfloc)
+
+        # 2b
         if os.path.islink(dotfloc):
             vprint('%s already linked' % dotf, verbose)
             pass
         elif os.path.isfile(dotfloc) or os.path.isdir(dotfloc):
-            # 2b
+            # 2c
             vprint('%s found in home' % dotf, verbose)
             if os.path.isfile(dotfbloc) or os.path.isdir(dotfbloc):
                 raise ValueError('Found a file (%s) that is already backed up'
@@ -63,7 +69,7 @@ def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
                 shutil.move(dotfloc, dotfbloc)
                 vprint('%s moved to backup' % dotf, verbose)
 
-        # 2c
+        # 2d
         if not os.path.islink(dotfloc):
             vprint('%s not symlinked' % dotf, verbose)
             if not (os.path.isfile(dotfaloc) or os.path.isdir(dotfaloc)):
@@ -124,12 +130,14 @@ def main():
                         help="absolute path to the dotfile archive")
     parser.add_argument("--verbose", default=False,
                         help="verbose mode", action="store_true")
+    parser.add_argument("--force", default=False,
+                        help="force relinking", action="store_true")
     args = parser.parse_args()
 
     dotfiles = get_dotfiles_list(args.dotarchive, verbose=args.verbose)
 
     make_symlinks(args.dothome, args.dotarchive, dotfiles,
-                  verbose=args.verbose)
+                  verbose=args.verbose, force=args.force)
 
 if __name__ == "__main__":
     main()
