@@ -19,7 +19,7 @@ __version__ = '0.2.2'
 
 def vprint(string, verbose):
     if verbose:
-        print('\t[ditto] %s' % string)
+        print('\t[donut] %s' % string)
 
 
 def make_symlinks(dothome, dotarchive, dotfiles, verbose=False):
