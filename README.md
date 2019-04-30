@@ -23,4 +23,7 @@ donut ~ ~/repos/dotfiles
 ## Notes
 
 - `setup.cfg` should be a flat list of files in `dotarchive`
-- otherwise all files in `dotarchive` will be symlinked
+  - if `setup.cfg` exists, then only the files in `setup.cfg` are linked
+  - else if `setup.cfg` does not exist, then all files in `dotarchive` are (attempted to be) linked
+- the symlinking is passive by default, and non-destructive even if forced
+  - `.dotfiles-original/` is created.  Any existing files will be moved here if a forced symlink is requested
