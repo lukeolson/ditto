@@ -16,8 +16,22 @@ pip install donut
 
 ## Usage
 
+Example
 ```
 donut ~ ~/repos/dotfiles
+```
+
+Help
+```
+usage: donut [-h] [--verbose] dothome dotarchive
+
+positional arguments:
+  dothome     absolute path to the dotfiles
+  dotarchive  absolute path to the dotfile archive
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --verbose   verbose mode
 ```
 
 ## Notes
